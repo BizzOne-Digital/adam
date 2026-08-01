@@ -40,6 +40,13 @@ export function createMetadata({
     alternates: {
       canonical: url,
     },
+    icons: {
+      icon: [
+        { url: "/images/a1-fitness-logo.png", type: "image/png" },
+      ],
+      apple: [{ url: "/images/a1-fitness-logo.png", type: "image/png" }],
+      shortcut: "/images/a1-fitness-logo.png",
+    },
     openGraph: {
       title: fullTitle,
       description,
