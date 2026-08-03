@@ -11,16 +11,35 @@ import {
 } from "@/lib/images";
 import { cn } from "@/lib/utils";
 
-export function GalleryGrid() {
-  const [filter, setFilter] = useState<(typeof GALLERY_CATEGORIES)[number]>("All");
+type GalleryItem = {
+  id: string;
+  src: string;
+  alt: string;
+  caption: string;
+  category: string;
+};
+
+export function GalleryGrid({
+  initialCategories,
+  initialItems,
+}: {
+  initialCategories?: string[];
+  initialItems?: GalleryItem[];
+}) {
+  const categories = initialCategories?.length
+    ? initialCategories
+    : [...GALLERY_CATEGORIES];
+  const allItems = initialItems?.length ? initialItems : GALLERY_ITEMS;
+
+  const [filter, setFilter] = useState<string>("All");
   const [active, setActive] = useState<number | null>(null);
 
   const items = useMemo(
     () =>
       filter === "All"
-        ? GALLERY_ITEMS
-        : GALLERY_ITEMS.filter((item) => item.category === filter),
-    [filter],
+        ? allItems
+        : allItems.filter((item) => item.category === filter),
+    [filter, allItems],
   );
 
   const close = useCallback(() => setActive(null), []);
@@ -59,7 +78,7 @@ export function GalleryGrid() {
         role="tablist"
         aria-label="Gallery categories"
       >
-        {GALLERY_CATEGORIES.map((category) => (
+        {categories.map((category) => (
           <button
             key={category}
             type="button"

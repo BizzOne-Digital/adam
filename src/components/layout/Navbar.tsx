@@ -6,15 +6,27 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown, Menu, Phone, X } from "lucide-react";
-import { NAV_LINKS, SITE } from "@/lib/constants";
-import { SERVICES } from "@/lib/services";
+import { NAV_LINKS } from "@/lib/constants";
+import { SERVICES, type Service } from "@/lib/services";
+import { useSiteSettings } from "@/providers/SettingsProvider";
 import { cn } from "@/lib/utils";
 
 export function Navbar() {
   const pathname = usePathname();
+  const settings = useSiteSettings();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
+  const [navServices, setNavServices] = useState<Service[]>(SERVICES);
+
+  useEffect(() => {
+    fetch("/api/content/services")
+      .then((r) => r.json())
+      .then((data) => {
+        if (Array.isArray(data) && data.length) setNavServices(data);
+      })
+      .catch(() => undefined);
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -50,12 +62,12 @@ export function Navbar() {
             : "bg-transparent py-3",
         )}
       >
-        <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-3 px-4 pt-[env(safe-area-inset-top)] sm:gap-4 sm:px-6 lg:px-10">
-          <Link href="/" className="relative z-10 flex shrink-0 items-center" aria-label={SITE.name}>
+        <div className="mx-auto flex max-w-[1400px] items-center gap-3 px-4 pt-[env(safe-area-inset-top)] sm:gap-4 sm:px-6 lg:gap-6 lg:px-10">
+          <Link href="/" className="relative z-10 flex shrink-0 items-center" aria-label={settings.name}>
             <span className="relative h-[44px] w-[44px] sm:h-[62px] sm:w-[62px]">
               <Image
-                src={SITE.logo}
-                alt={SITE.name}
+                src={settings.logo}
+                alt={settings.name}
                 fill
                 priority
                 className="object-contain"
@@ -65,7 +77,7 @@ export function Navbar() {
           </Link>
 
           <nav
-            className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 lg:flex"
+            className="hidden min-w-0 flex-1 items-center justify-center gap-0.5 lg:flex xl:gap-1"
             aria-label="Primary"
           >
             {NAV_LINKS.map((link) =>
@@ -79,7 +91,7 @@ export function Navbar() {
                   <button
                     type="button"
                     className={cn(
-                      "relative inline-flex items-center gap-1 px-4 py-2 text-[13px] font-semibold tracking-[0.14em] uppercase transition",
+                      "relative inline-flex items-center gap-1 px-2 py-2 text-[11px] font-semibold tracking-[0.1em] uppercase transition xl:px-3 xl:text-[13px] xl:tracking-[0.12em]",
                       isActive("/services")
                         ? "text-crimson"
                         : "text-white/90 hover:text-white",
@@ -95,7 +107,7 @@ export function Navbar() {
                     {isActive("/services") && (
                       <motion.span
                         layoutId="nav-underline"
-                        className="absolute inset-x-4 -bottom-0.5 h-[2px] bg-crimson"
+                        className="absolute inset-x-2 -bottom-0.5 h-[2px] bg-crimson xl:inset-x-3"
                       />
                     )}
                   </button>
@@ -114,7 +126,7 @@ export function Navbar() {
                         >
                           All Services
                         </Link>
-                        {SERVICES.map((service) => (
+                        {navServices.map((service) => (
                           <Link
                             key={service.slug}
                             href={service.href}
@@ -135,7 +147,7 @@ export function Navbar() {
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    "relative px-4 py-2 text-[13px] font-semibold tracking-[0.14em] uppercase transition",
+                    "relative shrink-0 px-2 py-2 text-[11px] font-semibold tracking-[0.1em] uppercase transition xl:px-3 xl:text-[13px] xl:tracking-[0.12em]",
                     isActive(link.href)
                       ? "text-crimson"
                       : "text-white/90 hover:text-white",
@@ -145,7 +157,7 @@ export function Navbar() {
                   {isActive(link.href) && (
                     <motion.span
                       layoutId="nav-underline"
-                      className="absolute inset-x-4 -bottom-0.5 h-[2px] bg-crimson"
+                      className="absolute inset-x-2 -bottom-0.5 h-[2px] bg-crimson xl:inset-x-3"
                     />
                   )}
                 </Link>
@@ -153,10 +165,17 @@ export function Navbar() {
             )}
           </nav>
 
-          <div className="hidden items-center gap-4 lg:flex">
+          <div className="relative z-10 ml-auto hidden shrink-0 items-center gap-2 lg:flex xl:gap-3">
+            <a
+              href={settings.phoneHref}
+              className="inline-flex shrink-0 items-center gap-2 rounded-md border border-white/25 px-3 py-2.5 text-[11px] font-bold tracking-[0.1em] text-white uppercase transition hover:border-crimson hover:text-crimson xl:px-4 xl:text-[12px] xl:tracking-[0.12em]"
+            >
+              <Phone className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+              <span>Call</span>
+            </a>
             <Link
               href="/contact"
-              className="rounded-md bg-crimson px-5 py-2.5 text-[12px] font-bold tracking-[0.12em] text-white uppercase shadow-[0_0_24px_rgba(229,9,20,0.35)] transition hover:bg-[#ff1a25]"
+              className="shrink-0 rounded-md bg-crimson px-4 py-2.5 text-[11px] font-bold tracking-[0.1em] text-white uppercase shadow-[0_0_24px_rgba(229,9,20,0.35)] transition hover:bg-[#ff1a25] xl:px-5 xl:text-[12px] xl:tracking-[0.12em]"
             >
               Start Your Journey
             </Link>
@@ -164,9 +183,9 @@ export function Navbar() {
 
           <div className="flex items-center gap-2 lg:hidden">
             <a
-              href={SITE.phoneHref}
+              href={settings.phoneHref}
               className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-white"
-              aria-label={`Call ${SITE.phone}`}
+              aria-label={`Call ${settings.phone}`}
             >
               <Phone className="h-4 w-4" />
             </a>
@@ -203,7 +222,7 @@ export function Navbar() {
             >
               <div className="mb-6 flex items-center gap-3 sm:mb-8">
                 <span className="relative h-12 w-12 sm:h-14 sm:w-14">
-                  <Image src={SITE.logo} alt="" fill className="object-contain" sizes="56px" />
+                  <Image src={settings.logo} alt="" fill className="object-contain" sizes="56px" />
                 </span>
                 <div>
                   <p className="font-display text-base text-white uppercase sm:text-lg">A1 Fitness</p>
@@ -228,7 +247,7 @@ export function Navbar() {
                           Services
                         </Link>
                         <div className="mb-3 ml-1 space-y-0.5 border-l border-crimson/40 pl-4">
-                          {SERVICES.map((service) => (
+                          {navServices.map((service) => (
                             <Link
                               key={service.slug}
                               href={service.href}
@@ -261,19 +280,19 @@ export function Navbar() {
                 >
                   Start Your Journey
                 </Link>
-                <a href={SITE.phoneHref} className="block py-1 text-sm text-white/70">
-                  {SITE.phone}
+                <a href={settings.phoneHref} className="block py-1 text-sm text-white/70">
+                  {settings.phone}
                 </a>
-                <a href={SITE.emailHref} className="break-all py-1 text-sm text-white/70">
-                  {SITE.email}
+                <a href={settings.emailHref} className="break-all py-1 text-sm text-white/70">
+                  {settings.email}
                 </a>
                 <a
-                  href={SITE.socialHref}
+                  href={settings.socialHref}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block py-1 text-sm text-crimson"
                 >
-                  {SITE.social}
+                  Instagram {settings.social}
                 </a>
               </div>
             </motion.nav>

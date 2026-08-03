@@ -6,8 +6,9 @@ export const SITE = {
   phoneHref: "tel:+15163103338",
   email: "a1training5438@gmail.com",
   emailHref: "mailto:a1training5438@gmail.com",
-  social: "@adamerlichfitness5438",
-  socialHref: "https://www.instagram.com/adamerlichfitness5438",
+  social: "@adamsrlichfitness5438",
+  socialHref: "https://www.instagram.com/adamsrlichfitness5438",
+  socialLabel: "Instagram",
   logo: "/images/a1-fitness-logo.png",
   url: "https://a1fitnessnutrition.com",
   serviceArea: "Serving all of Long Island",
@@ -21,9 +22,11 @@ export type NavLink = {
 
 export const NAV_LINKS: NavLink[] = [
   { label: "Home", href: "/" },
-  { label: "About Us", href: "/about" },
+  { label: "About", href: "/about" },
   { label: "Services", href: "/services", hasDropdown: true },
   { label: "Gallery", href: "/gallery" },
+  { label: "Testimonials", href: "/testimonials" },
+  { label: "FAQs", href: "/faqs" },
   { label: "Contact", href: "/contact" },
 ];
 

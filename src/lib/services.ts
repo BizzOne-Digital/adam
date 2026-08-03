@@ -26,6 +26,8 @@ export interface Service {
   related: string[];
   accent: ServiceAccent;
   showOffer?: boolean;
+  heroImage?: string;
+  detailImage?: string;
 }
 
 export const SERVICES: Service[] = [

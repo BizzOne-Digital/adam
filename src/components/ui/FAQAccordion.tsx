@@ -46,7 +46,7 @@ export function FAQAccordion({ items }: { items: FAQItem[] }) {
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <p className="border-t border-white/5 px-5 pt-3 pb-5 text-sm leading-relaxed text-muted md:text-base">
+                  <p className="border-t border-white/5 px-5 pt-3 pb-5 text-sm leading-relaxed whitespace-pre-line text-muted md:text-base">
                     {item.answer}
                   </p>
                 </motion.div>

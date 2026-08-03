@@ -12,9 +12,12 @@ import {
 
 const INTRO_STORAGE_KEY = "a1-intro-seen";
 
+type IntroPhase = "boot" | "intro" | "ready";
+
 interface MotionSettings {
   prefersReducedMotion: boolean;
   introComplete: boolean;
+  introPhase: IntroPhase;
   mounted: boolean;
   skipIntro: () => void;
   completeIntro: () => void;
@@ -23,10 +26,10 @@ interface MotionSettings {
 const MotionSettingsContext = createContext<MotionSettings | null>(null);
 
 export function ReducedMotionProvider({ children }: { children: ReactNode }) {
-  // Keep SSR + first client paint identical to avoid hydration mismatches
-  const [mounted, setMounted] = useState(false);
+  // Start in "boot" so first paint is a black gate — never flash the hero before intro
+  const [introPhase, setIntroPhase] = useState<IntroPhase>("boot");
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-  const [introComplete, setIntroComplete] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -41,11 +44,24 @@ export function ReducedMotionProvider({ children }: { children: ReactNode }) {
       seen = false;
     }
 
-    setIntroComplete(seen || media.matches);
+    const reduced = media.matches;
+    setPrefersReducedMotion(reduced);
+    setIntroPhase(seen || reduced ? "ready" : "intro");
     setMounted(true);
 
     return () => media.removeEventListener("change", updateMotion);
   }, []);
+
+  useEffect(() => {
+    if (introPhase === "ready") {
+      document.body.style.overflow = "";
+      return;
+    }
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [introPhase]);
 
   const markIntroSeen = useCallback(() => {
     try {
@@ -53,18 +69,19 @@ export function ReducedMotionProvider({ children }: { children: ReactNode }) {
     } catch {
       // sessionStorage may be unavailable
     }
-    setIntroComplete(true);
+    setIntroPhase("ready");
   }, []);
 
   const value = useMemo<MotionSettings>(
     () => ({
       prefersReducedMotion,
-      introComplete,
+      introComplete: introPhase === "ready",
+      introPhase,
       mounted,
       skipIntro: markIntroSeen,
       completeIntro: markIntroSeen,
     }),
-    [prefersReducedMotion, introComplete, mounted, markIntroSeen],
+    [prefersReducedMotion, introPhase, mounted, markIntroSeen],
   );
 
   return (

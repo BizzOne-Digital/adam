@@ -3,6 +3,7 @@ import { Anton, Manrope, Oswald } from "next/font/google";
 import { SiteProviders } from "@/providers/SiteProviders";
 import { createMetadata, localBusinessJsonLd } from "@/lib/seo";
 import { SITE } from "@/lib/constants";
+import { getSettings } from "@/lib/cms";
 import "./globals.css";
 
 const anton = Anton({
@@ -38,11 +39,14 @@ export const viewport: Viewport = {
   themeColor: "#050505",
 };
 
-export default function RootLayout({
+export const dynamic = "force-dynamic";
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const settings = await getSettings();
   const jsonLd = localBusinessJsonLd();
 
   return (
@@ -55,7 +59,7 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <SiteProviders>{children}</SiteProviders>
+        <SiteProviders settings={settings}>{children}</SiteProviders>
       </body>
     </html>
   );

@@ -14,7 +14,6 @@ import {
   LineChart,
   Monitor,
   Package,
-  Quote,
   Target,
   Trophy,
   Users,
@@ -22,9 +21,12 @@ import {
   Sparkles,
 } from "lucide-react";
 import { Reveal } from "@/components/ui/SectionHeading";
-import { SITE, OFFER } from "@/lib/constants";
-import { SERVICES } from "@/lib/services";
 import { cn } from "@/lib/utils";
+import { REAL_TESTIMONIALS } from "@/lib/content/reviews";
+import { TestimonialsCarousel } from "@/components/ui/TestimonialsCarousel";
+import { useSiteSettings } from "@/providers/SettingsProvider";
+import type { Service } from "@/lib/services";
+import type { CmsBits } from "@/lib/cms/types";
 
 const FEATURE_BAR = [
   { label: "Customized Training", icon: Target },
@@ -98,26 +100,25 @@ const PROCESS = [
   },
 ];
 
-const TESTIMONIALS = [
-  {
-    quote:
-      "Client testimonial content coming soon. This space is ready for authentic stories about strength, health, and confidence.",
-    name: "Long Island Client",
-    detail: "Personal Training",
-  },
-  {
-    quote:
-      "Client testimonial content coming soon. Placeholder for inclusive coaching feedback from beginners, seniors, and adaptive trainees.",
-    name: "Training Client",
-    detail: "In-Home Training",
-  },
-  {
-    quote:
-      "Client testimonial content coming soon. Real names and experiences will be added with permission.",
-    name: "Online Coaching Client",
-    detail: "Online Coaching",
-  },
-];
+const TESTIMONIALS = REAL_TESTIMONIALS.map((t) => ({
+  quote: t.quote,
+  name: t.name,
+  detail: t.detail,
+}));
+
+export type HomeCms = {
+  hero?: CmsBits | null;
+  credibility?: CmsBits | null;
+  aboutPreview?: CmsBits | null;
+  whoWeHelp?: CmsBits | null;
+  services?: CmsBits | null;
+  inclusive?: CmsBits | null;
+  locations?: CmsBits | null;
+  process?: CmsBits | null;
+  offer?: CmsBits | null;
+  testimonials?: CmsBits | null;
+  finalCta?: CmsBits | null;
+};
 
 const ABOUT_PHOTOS = [
   {
@@ -142,11 +143,14 @@ function SectionEyebrow({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function HomeHero() {
+export function HomeHero({ cms }: { cms?: CmsBits | null }) {
+  const f = cms?.fields;
+  const bg = cms?.images.background || "/images/hero-inclusive-training.png";
+
   return (
     <section className="relative flex min-h-[100svh] items-end overflow-hidden pt-24 pb-10 sm:items-center sm:pt-28 sm:pb-16 md:pt-32">
       <Image
-        src="/images/hero-inclusive-training.png"
+        src={bg}
         alt="Inclusive personal training session with a coach guiding a client during a cable row workout"
         fill
         priority
@@ -168,7 +172,7 @@ export function HomeHero() {
           >
             <span className="h-px w-6 shrink-0 bg-crimson shadow-[0_0_12px_rgba(229,9,20,0.8)] sm:w-10" />
             <p className="text-[10px] font-semibold tracking-[0.18em] text-white uppercase sm:text-xs sm:tracking-[0.28em]">
-              Personal Training Across Long Island
+              {f?.eyebrow || "Personal Training Across Long Island"}
             </p>
           </motion.div>
 
@@ -178,9 +182,11 @@ export function HomeHero() {
             transition={{ duration: 0.7, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
             className="font-display text-[clamp(2.15rem,9vw,5.75rem)] leading-[0.95] font-bold tracking-tight uppercase italic"
           >
-            <span className="block text-white">Build Strength.</span>
+            <span className="block text-white">
+              {f?.titleLine1 || "Build Strength."}
+            </span>
             <span className="mt-1 block text-crimson drop-shadow-[0_0_30px_rgba(229,9,20,0.45)]">
-              Own Your Confidence.
+              {f?.titleLine2 || "Own Your Confidence."}
             </span>
           </motion.h1>
 
@@ -190,8 +196,8 @@ export function HomeHero() {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="mt-4 max-w-lg text-sm leading-relaxed text-white/80 sm:mt-6 sm:text-base md:text-lg"
           >
-            Customized coaching at the gym, in your home, or online—built around your
-            goals, abilities, and lifestyle.
+            {f?.subtitle ||
+              "Customized coaching at the gym, in your home, or online—built around your goals, abilities, and lifestyle."}
           </motion.p>
 
           <motion.div
@@ -204,13 +210,13 @@ export function HomeHero() {
               href="/contact"
               className="inline-flex w-full items-center justify-center rounded-md bg-crimson px-7 py-3.5 text-xs font-bold tracking-[0.14em] text-white uppercase shadow-[0_0_28px_rgba(229,9,20,0.4)] transition hover:bg-[#ff1a25] sm:w-auto sm:text-[13px]"
             >
-              Start Your Journey
+              {f?.ctaPrimary || "Start Your Journey"}
             </Link>
             <Link
               href="/services"
               className="inline-flex w-full items-center justify-center rounded-md border border-white/40 bg-black/40 px-7 py-3.5 text-xs font-bold tracking-[0.14em] text-white uppercase transition hover:border-white hover:bg-white/5 sm:w-auto sm:text-[13px]"
             >
-              Explore Services
+              {f?.ctaSecondary || "Explore Services"}
             </Link>
           </motion.div>
 
@@ -225,7 +231,7 @@ export function HomeHero() {
                 <Dumbbell className="h-4 w-4" aria-hidden="true" />
               </span>
               <span className="text-[11px] font-semibold tracking-[0.18em] text-white uppercase">
-                All Fitness Levels
+                {f?.badge1 || "All Fitness Levels"}
               </span>
             </div>
             <div className="flex items-center gap-3">
@@ -233,7 +239,7 @@ export function HomeHero() {
                 <Accessibility className="h-4 w-4" aria-hidden="true" />
               </span>
               <span className="text-[11px] font-semibold tracking-[0.18em] text-white uppercase">
-                Inclusive Coaching
+                {f?.badge2 || "Inclusive Coaching"}
               </span>
             </div>
           </motion.div>
@@ -243,22 +249,31 @@ export function HomeHero() {
   );
 }
 
-export function CredibilityStrip() {
+export function CredibilityStrip({ cms }: { cms?: CmsBits | null }) {
+  const f = cms?.fields;
+  const items = [
+    { label: f?.item1 || FEATURE_BAR[0].label, icon: FEATURE_BAR[0].icon },
+    { label: f?.item2 || FEATURE_BAR[1].label, icon: FEATURE_BAR[1].icon },
+    { label: f?.item3 || FEATURE_BAR[2].label, icon: FEATURE_BAR[2].icon },
+    { label: f?.item4 || FEATURE_BAR[3].label, icon: FEATURE_BAR[3].icon },
+    { label: f?.item5 || FEATURE_BAR[4].label, icon: FEATURE_BAR[4].icon },
+  ];
+
   return (
     <section
       className="border-y border-white/10 bg-[#111214] py-8 md:py-10"
       aria-label="Credibility highlights"
     >
       <div className="mx-auto grid max-w-[1400px] grid-cols-2 gap-5 px-4 sm:gap-6 sm:px-6 md:grid-cols-5 lg:px-10">
-        {FEATURE_BAR.map((item, i) => {
+        {items.map((item, i) => {
           const Icon = item.icon;
           return (
             <Reveal
-              key={item.label}
+              key={item.label + i}
               delay={i * 0.05}
               className={cn(
                 "flex flex-col items-center text-center",
-                i === FEATURE_BAR.length - 1 && "col-span-2 md:col-span-1",
+                i === items.length - 1 && "col-span-2 md:col-span-1",
               )}
             >
               <Icon className="mb-2.5 h-6 w-6 text-crimson sm:mb-3 sm:h-7 sm:w-7" strokeWidth={1.5} aria-hidden="true" />
@@ -273,33 +288,46 @@ export function CredibilityStrip() {
   );
 }
 
-export function AboutPreview() {
+export function AboutPreview({ cms }: { cms?: CmsBits | null }) {
+  const f = cms?.fields;
+  const photos = [
+    {
+      src: cms?.images.photo1 || ABOUT_PHOTOS[0].src,
+      alt: ABOUT_PHOTOS[0].alt,
+    },
+    {
+      src: cms?.images.photo2 || ABOUT_PHOTOS[1].src,
+      alt: ABOUT_PHOTOS[1].alt,
+    },
+    {
+      src: cms?.images.photo3 || ABOUT_PHOTOS[2].src,
+      alt: ABOUT_PHOTOS[2].alt,
+    },
+  ];
+
   return (
     <section className="bg-black py-14 sm:py-20 md:py-28">
       <div className="mx-auto grid max-w-[1400px] items-center gap-10 px-4 sm:gap-12 sm:px-6 lg:grid-cols-2 lg:gap-16 lg:px-10">
         <Reveal direction="left">
-          <SectionEyebrow>About A1</SectionEyebrow>
+          <SectionEyebrow>{f?.eyebrow || "About A1"}</SectionEyebrow>
           <h2 className="font-display text-[clamp(2rem,8vw,3.75rem)] font-bold tracking-tight text-white uppercase sm:text-5xl md:text-6xl">
-            Fitness Built
-            <br />
-            Around You
+            {f?.title || "Fitness Built Around You"}
           </h2>
           <p className="mt-5 max-w-lg text-sm leading-relaxed text-white/65 md:text-base">
-            At A1 Fitness & Nutrition, the mission is simple: to help you become the
-            strongest, healthiest and most confident version of yourself. Every program is
-            created around your body, abilities, lifestyle and goals.
+            {f?.body ||
+              "At A1 Fitness & Nutrition, the mission is simple: to help you become the strongest, healthiest and most confident version of yourself. Every program is created around your body, abilities, lifestyle and goals."}
           </p>
           <Link
             href="/about"
             className="mt-8 inline-flex w-full items-center justify-center rounded-md border border-white/40 px-6 py-3.5 text-xs font-bold tracking-[0.16em] text-crimson uppercase transition hover:border-crimson hover:bg-crimson/10 sm:w-auto"
           >
-            Meet Your Coach
+            {f?.cta || "Meet Your Coach"}
           </Link>
         </Reveal>
 
         <Reveal direction="right">
           <div className="grid grid-cols-3 items-start gap-2 sm:gap-3 md:gap-4">
-            {ABOUT_PHOTOS.map((photo, i) => (
+            {photos.map((photo, i) => (
               <div
                 key={photo.alt}
                 className={cn(
@@ -324,15 +352,15 @@ export function AboutPreview() {
   );
 }
 
-export function WhoWeHelp() {
+export function WhoWeHelp({ cms }: { cms?: CmsBits | null }) {
+  const f = cms?.fields;
   return (
     <section className="bg-[#0b0b0d] py-14 sm:py-20 md:py-28">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10">
         <Reveal className="mb-8 text-center sm:mb-12">
-          <SectionEyebrow>Why Choose Us?</SectionEyebrow>
+          <SectionEyebrow>{f?.eyebrow || "Why Choose Us?"}</SectionEyebrow>
           <h2 className="font-display text-[clamp(1.85rem,7vw,3rem)] font-bold text-white uppercase sm:text-5xl">
-            Training for{" "}
-            <span className="text-crimson">Every Body</span>
+            {f?.title || "Training for Every Body"}
           </h2>
         </Reveal>
 
@@ -367,19 +395,28 @@ export function WhoWeHelp() {
   );
 }
 
-export function ServicesShowcase() {
+export function ServicesShowcase({
+  cms,
+  services = [],
+}: {
+  cms?: CmsBits | null;
+  services?: Service[];
+}) {
+  const f = cms?.fields;
+  const list = services.length ? services : [];
+
   return (
     <section className="bg-black py-14 sm:py-20 md:py-28">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10">
         <Reveal className="mb-8 text-center sm:mb-12">
-          <SectionEyebrow>Our Services</SectionEyebrow>
+          <SectionEyebrow>{f?.eyebrow || "Our Services"}</SectionEyebrow>
           <h2 className="font-display text-[clamp(1.85rem,7vw,3rem)] font-bold text-white uppercase sm:text-5xl">
-            Choose How You <span className="text-crimson">Train</span>
+            {f?.title || "Choose How You Train"}
           </h2>
         </Reveal>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-5">
-          {SERVICES.map((service, i) => (
+          {list.map((service, i) => (
             <Reveal key={service.slug} delay={i * 0.06}>
               <Link
                 href={service.href}
@@ -415,28 +452,26 @@ export function ServicesShowcase() {
   );
 }
 
-export function InclusiveFeature() {
+export function InclusiveFeature({ cms }: { cms?: CmsBits | null }) {
+  const f = cms?.fields;
   const points = [
-    { title: "Accessible Environments", icon: Accessibility },
-    { title: "Adaptive Approach", icon: HeartHandshake },
-    { title: "Empowering Coaching", icon: Trophy },
+    { title: f?.point1 || "Accessible Environments", icon: Accessibility },
+    { title: f?.point2 || "Adaptive Approach", icon: HeartHandshake },
+    { title: f?.point3 || "Empowering Coaching", icon: Trophy },
   ];
+  const img = cms?.images.image || "/images/Every-Body-Deserves.png";
 
   return (
     <section className="relative overflow-hidden bg-black">
       <div className="grid lg:min-h-[560px] lg:grid-cols-[42%_58%]">
-        {/* Left copy panel */}
         <div className="relative z-20 flex flex-col justify-center bg-black px-4 py-14 sm:px-10 sm:py-16 lg:px-14 xl:px-16">
           <Reveal direction="left">
             <h2 className="font-display text-[clamp(1.75rem,7vw,3.4rem)] leading-[1.05] font-bold tracking-tight text-silver uppercase italic">
-              Every Body Deserves
-              <br />
-              to Feel Strong
+              {f?.title || "Every Body Deserves to Feel Strong"}
             </h2>
             <p className="mt-5 max-w-md text-sm leading-relaxed text-white/75 md:text-[15px]">
-              We&apos;re proud to coach people of all ages, abilities, and backgrounds. Our
-              inclusive approach ensures that everyone has the support and respect they
-              deserve.
+              {f?.body ||
+                "We're proud to coach people of all ages, abilities, and backgrounds. Our inclusive approach ensures that everyone has the support and respect they deserve."}
             </p>
             <div className="mt-8 grid grid-cols-1 gap-5 sm:mt-10 sm:grid-cols-3 sm:gap-4">
               {points.map((point) => {
@@ -458,11 +493,10 @@ export function InclusiveFeature() {
           </Reveal>
         </div>
 
-        {/* Right photo with diagonal red cut */}
         <div className="relative min-h-[280px] sm:min-h-[360px] lg:min-h-full">
           <div className="absolute inset-0 overflow-hidden lg:[clip-path:polygon(7%_0,100%_0,100%_100%,0_100%)]">
             <Image
-              src="/images/Every-Body-Deserves.png"
+              src={img}
               alt="Diverse inclusive fitness community of all ages and abilities training together"
               fill
               className="object-cover object-center"
@@ -470,7 +504,6 @@ export function InclusiveFeature() {
             />
           </div>
 
-          {/* Diagonal crimson edge */}
           <div
             className="pointer-events-none absolute inset-y-0 left-0 z-10 hidden w-[3px] bg-crimson shadow-[0_0_18px_rgba(229,9,20,0.75)] lg:block"
             style={{
@@ -486,13 +519,14 @@ export function InclusiveFeature() {
   );
 }
 
-export function TrainingOptions() {
+export function TrainingOptions({ cms }: { cms?: CmsBits | null }) {
+  const f = cms?.fields;
   return (
     <section className="bg-black py-14 sm:py-20 md:py-28">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10">
         <Reveal className="mb-8 text-center sm:mb-12">
           <h2 className="font-display text-[clamp(1.85rem,7vw,3rem)] font-bold text-crimson uppercase sm:text-5xl">
-            Train Where You Are
+            {f?.title || "Train Where You Are"}
           </h2>
         </Reveal>
 
@@ -505,7 +539,6 @@ export function TrainingOptions() {
                   href={card.href}
                   className="group relative flex min-h-[260px] flex-col overflow-hidden rounded-xl border border-white/10 bg-[#111214] p-6 transition duration-500 hover:border-crimson/60 hover:shadow-[0_0_40px_rgba(229,9,20,0.2)] sm:min-h-[280px] sm:p-7"
                 >
-                  {/* Image: always soft on touch, hover-reveal on desktop */}
                   <div className="pointer-events-none absolute inset-0 overflow-hidden">
                     <Image
                       src={card.image}
@@ -519,7 +552,6 @@ export function TrainingOptions() {
                     <div className="absolute inset-0 bg-crimson/10 opacity-40 transition-opacity duration-700 md:opacity-0 md:group-hover:opacity-100" />
                   </div>
 
-                  {/* Content stays on top */}
                   <div className="relative z-10 flex h-full flex-col">
                     <Icon
                       className="mb-5 h-9 w-9 text-crimson transition duration-500 group-hover:scale-110 group-hover:drop-shadow-[0_0_12px_rgba(229,9,20,0.8)]"
@@ -547,15 +579,15 @@ export function TrainingOptions() {
   );
 }
 
-export function HowItWorks() {
+export function HowItWorks({ cms }: { cms?: CmsBits | null }) {
+  const f = cms?.fields;
   return (
     <section className="bg-[#0b0b0d] py-14 sm:py-20 md:py-28">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10">
         <Reveal className="mb-10 text-center sm:mb-14">
-          <SectionEyebrow>Our Process</SectionEyebrow>
+          <SectionEyebrow>{f?.eyebrow || "Our Process"}</SectionEyebrow>
           <h2 className="font-display text-[clamp(1.85rem,7vw,3rem)] font-bold text-white uppercase sm:text-5xl">
-            Your Journey,{" "}
-            <span className="text-crimson">Built for You</span>
+            {f?.title || "Your Journey, Built for You"}
           </h2>
         </Reveal>
 
@@ -584,13 +616,18 @@ export function HowItWorks() {
   );
 }
 
-export function HomeOfferBanner() {
+export function HomeOfferBanner({ cms }: { cms?: CmsBits | null }) {
+  const settings = useSiteSettings();
+  const f = cms?.fields;
+  const bg = cms?.images.background || "/images/claim-offer.png";
+  const href = settings.offerHref || "/contact?offer=nutrition";
+
   return (
     <section className="relative w-full bg-black" aria-labelledby="offer-heading">
       <Reveal>
         <div className="relative w-full min-h-[280px] overflow-hidden sm:min-h-[340px] md:min-h-[420px] lg:min-h-[480px]">
           <Image
-            src="/images/claim-offer.png"
+            src={bg}
             alt=""
             fill
             className="object-cover object-center"
@@ -601,22 +638,22 @@ export function HomeOfferBanner() {
 
           <div className="relative z-10 flex min-h-[260px] flex-col items-center justify-center px-4 py-14 text-center sm:min-h-[340px] sm:py-16 md:min-h-[420px] lg:min-h-[480px]">
             <p className="mb-3 text-[10px] font-bold tracking-[0.28em] text-crimson uppercase sm:text-[11px] sm:tracking-[0.35em]">
-              Limited Time Offer
+              {f?.eyebrow || "Limited Time Offer"}
             </p>
             <h2
               id="offer-heading"
               className="font-display max-w-5xl text-[clamp(1.45rem,6.5vw,3.75rem)] leading-[1.08] font-bold text-silver uppercase italic"
             >
-              Get 50% Off Your Nutrition Program
+              {f?.title || settings.offerTitle || "Get 50% Off Your Nutrition Program"}
             </h2>
             <p className="font-display mt-2 max-w-4xl text-[clamp(1rem,4.2vw,2.15rem)] font-bold text-crimson uppercase italic">
-              When You Purchase Training Sessions
+              {f?.subtitle || settings.offerNote || "When You Purchase Training Sessions"}
             </p>
             <Link
-              href={OFFER.href}
+              href={href}
               className="mt-7 inline-flex w-full max-w-xs items-center justify-center rounded-md bg-crimson px-8 py-3.5 text-xs font-bold tracking-[0.16em] text-white uppercase shadow-[0_0_28px_rgba(229,9,20,0.45)] transition hover:bg-[#ff1a25] sm:mt-8 sm:w-auto sm:max-w-none"
             >
-              Claim Your Offer
+              {f?.cta || settings.offerCta || "Claim Your Offer"}
             </Link>
           </div>
         </div>
@@ -625,46 +662,44 @@ export function HomeOfferBanner() {
   );
 }
 
-export function HomeTestimonials() {
+export function HomeTestimonials({
+  items = TESTIMONIALS,
+  cms,
+}: {
+  items?: { quote: string; name: string; detail: string }[];
+  cms?: CmsBits | null;
+}) {
+  const f = cms?.fields;
   return (
     <section className="bg-black py-14 sm:py-20 md:py-28">
-      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10">
-        <Reveal className="mb-8 text-center sm:mb-12">
-          <SectionEyebrow>Client Feedback</SectionEyebrow>
+      <div className="mx-auto max-w-[1100px] px-4 sm:px-6 lg:px-10">
+        <Reveal className="mb-8 text-center sm:mb-10">
+          <SectionEyebrow>{f?.eyebrow || "Client Feedback"}</SectionEyebrow>
           <h2 className="font-display text-[clamp(1.85rem,7vw,3rem)] font-bold text-white uppercase sm:text-5xl">
-            Real Support.{" "}
-            <span className="text-crimson">Real Confidence.</span>
+            {f?.title || "Real Support. Real Confidence."}
           </h2>
         </Reveal>
 
-        <div className="grid gap-4 sm:gap-5 md:grid-cols-3">
-          {TESTIMONIALS.map((item, i) => (
-            <Reveal key={item.name} delay={i * 0.08}>
-              <article className="flex h-full flex-col rounded-xl border border-white/10 bg-[#111214] p-5 sm:p-7">
-                <Quote className="mb-4 h-8 w-8 text-crimson" aria-hidden="true" />
-                <p className="flex-1 text-sm leading-relaxed text-white/70">{item.quote}</p>
-                <div className="mt-6 border-t border-white/10 pt-4">
-                  <p className="text-sm font-bold text-white">{item.name}</p>
-                  <p className="mt-1 text-xs tracking-wider text-crimson uppercase">
-                    {item.detail}
-                  </p>
-                </div>
-              </article>
-            </Reveal>
-          ))}
-        </div>
+        <TestimonialsCarousel items={items} />
       </div>
     </section>
   );
 }
 
-export function HomeFinalCTA() {
+export function HomeFinalCTA({ cms }: { cms?: CmsBits | null }) {
+  const settings = useSiteSettings();
+  const f = cms?.fields;
+  const bg = cms?.images.background || "/images/your-stronger.png";
+  const title = f?.title || "Your Stronger Life Starts Here";
+  const titleParts = title.split(/\s+/);
+  const mid = Math.ceil(titleParts.length / 2);
+
   return (
     <section className="relative w-full bg-black" aria-labelledby="final-cta-heading">
       <Reveal>
         <div className="relative min-h-[340px] w-full overflow-hidden sm:min-h-[440px] md:min-h-[520px]">
           <Image
-            src="/images/your-stronger.png"
+            src={bg}
             alt="Athlete training hard — your stronger life starts here"
             fill
             className="object-cover object-[55%_center] sm:object-[70%_center] md:object-right"
@@ -681,25 +716,25 @@ export function HomeFinalCTA() {
                 id="final-cta-heading"
                 className="font-display text-[clamp(1.85rem,7vw,3.75rem)] leading-[1.02] font-bold tracking-tight text-silver uppercase italic"
               >
-                Your Stronger Life
+                {titleParts.slice(0, mid).join(" ")}
                 <br />
-                Starts Here
+                {titleParts.slice(mid).join(" ")}
               </h2>
               <p className="mt-4 text-sm text-white/80 sm:text-base">
-                Let&apos;s build a plan that works for you.
+                {f?.subtitle || "Let's build a plan that works for you."}
               </p>
               <div className="mt-7 flex w-full flex-col gap-3 sm:mt-8 sm:w-auto sm:flex-row sm:items-center">
                 <Link
                   href="/contact"
                   className="inline-flex w-full items-center justify-center rounded-md bg-crimson px-7 py-3.5 text-xs font-bold tracking-[0.14em] text-white uppercase shadow-[0_0_28px_rgba(229,9,20,0.4)] transition hover:bg-[#ff1a25] sm:w-auto"
                 >
-                  Book a Consultation
+                  {f?.ctaPrimary || "Book a Consultation"}
                 </Link>
                 <a
-                  href={SITE.phoneHref}
+                  href={settings.phoneHref}
                   className="inline-flex w-full items-center justify-center rounded-md border border-white/70 bg-transparent px-7 py-3.5 text-xs font-bold tracking-[0.14em] text-white uppercase transition hover:border-white hover:bg-white/5 sm:w-auto"
                 >
-                  Call {SITE.phone}
+                  Call {settings.phone}
                 </a>
               </div>
             </div>
@@ -710,20 +745,28 @@ export function HomeFinalCTA() {
   );
 }
 
-export function HomePageContent() {
+export function HomePageContent({
+  testimonials,
+  services,
+  cms,
+}: {
+  testimonials?: { quote: string; name: string; detail: string }[];
+  services?: Service[];
+  cms?: HomeCms;
+}) {
   return (
     <>
-      <HomeHero />
-      <CredibilityStrip />
-      <AboutPreview />
-      <WhoWeHelp />
-      <ServicesShowcase />
-      <InclusiveFeature />
-      <TrainingOptions />
-      <HowItWorks />
-      <HomeOfferBanner />
-      <HomeTestimonials />
-      <HomeFinalCTA />
+      <HomeHero cms={cms?.hero} />
+      <CredibilityStrip cms={cms?.credibility} />
+      <AboutPreview cms={cms?.aboutPreview} />
+      <WhoWeHelp cms={cms?.whoWeHelp} />
+      <ServicesShowcase cms={cms?.services} services={services} />
+      <InclusiveFeature cms={cms?.inclusive} />
+      <TrainingOptions cms={cms?.locations} />
+      <HowItWorks cms={cms?.process} />
+      <HomeOfferBanner cms={cms?.offer} />
+      <HomeTestimonials items={testimonials} cms={cms?.testimonials} />
+      <HomeFinalCTA cms={cms?.finalCta} />
     </>
   );
 }

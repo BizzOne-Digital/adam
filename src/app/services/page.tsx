@@ -1,8 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { createMetadata } from "@/lib/seo";
-import { SERVICES } from "@/lib/services";
-import { IMAGES } from "@/lib/images";
+import { getPage, getSection, getServices } from "@/lib/cms";
 import { PageHero, FinalCTA } from "@/components/ui/Cards";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { Reveal } from "@/components/ui/SectionHeading";
@@ -14,42 +13,27 @@ export const metadata = createMetadata({
   path: "/services",
 });
 
-const COMPARISON = [
-  {
-    format: "Personal Training",
-    best: "Focused one-on-one coaching and accountability",
-    where: "Flexible location based on your plan",
-  },
-  {
-    format: "In-Home Training",
-    best: "Convenience, privacy, and no travel",
-    where: "Your home across Long Island",
-  },
-  {
-    format: "Gym Training",
-    best: "Equipment variety and form confidence",
-    where: "Your local gym (access permitting)",
-  },
-  {
-    format: "Online Coaching",
-    best: "Flexible remote support from anywhere",
-    where: "Digital plans and check-ins",
-  },
-  {
-    format: "Nutrition Coaching",
-    best: "Sustainable habits that support training",
-    where: "Guidance paired with your program",
-  },
-];
+export const dynamic = "force-dynamic";
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const [services, page] = await Promise.all([getServices(), getPage("services")]);
+  const hero = getSection(page, "hero");
+
+  const comparison = services.map((s) => ({
+    format: s.title,
+    best: s.summary,
+  }));
+
   return (
     <>
       <PageHero
-        title="Services"
-        subtitle="Choose the coaching format that fits your lifestyle—home, gym, or online."
-        image={IMAGES.servicesHero}
-        imageAlt={IMAGES.servicesHeroAlt}
+        title={hero?.fields.title || "Services"}
+        subtitle={
+          hero?.fields.subtitle ||
+          "Choose the coaching format that fits your lifestyle—home, gym, or online."
+        }
+        image={hero?.images.background || "/images/Personal-Training.png"}
+        imageAlt="Overview of personal training services"
         breadcrumbs={[
           { label: "Home", href: "/" },
           { label: "Services" },
@@ -58,7 +42,7 @@ export default function ServicesPage() {
 
       <section className="py-14 sm:py-20 md:py-24">
         <div className="mx-auto max-w-7xl space-y-16 px-4 sm:space-y-24 sm:px-6 lg:px-8">
-          {SERVICES.map((service, index) => (
+          {services.map((service, index) => (
             <div
               key={service.slug}
               className={`grid items-center gap-8 sm:gap-10 lg:grid-cols-2 ${
@@ -97,12 +81,6 @@ export default function ServicesPage() {
                     ))}
                   </ul>
                 </div>
-                <div className="mt-6">
-                  <p className="mb-2 text-xs tracking-[0.2em] text-silver uppercase">
-                    Suitable For
-                  </p>
-                  <p className="text-sm text-muted">{service.suitableFor[0]}</p>
-                </div>
                 <p className="mt-4 text-sm font-semibold text-silver">
                   Contact for personalized program options.
                 </p>
@@ -133,10 +111,8 @@ export default function ServicesPage() {
               Which Training Path Fits You?
             </h2>
           </div>
-
-          {/* Mobile cards */}
           <div className="space-y-3 md:hidden">
-            {COMPARISON.map((row) => (
+            {comparison.map((row) => (
               <div
                 key={row.format}
                 className="rounded-xl border border-white/10 bg-graphite/50 p-4"
@@ -144,32 +120,23 @@ export default function ServicesPage() {
                 <p className="font-display text-base font-bold text-ice uppercase">
                   {row.format}
                 </p>
-                <p className="mt-2 text-sm text-muted">
-                  <span className="text-crimson">Best for:</span> {row.best}
-                </p>
-                <p className="mt-1 text-sm text-muted">
-                  <span className="text-crimson">Where:</span> {row.where}
-                </p>
+                <p className="mt-2 text-sm text-muted">{row.best}</p>
               </div>
             ))}
           </div>
-
-          {/* Desktop table */}
           <div className="hidden overflow-x-auto rounded-2xl border border-white/10 md:block">
             <table className="min-w-full text-left text-sm">
               <thead className="bg-graphite/80 text-xs tracking-wider text-silver uppercase">
                 <tr>
                   <th className="px-4 py-4">Format</th>
                   <th className="px-4 py-4">Best For</th>
-                  <th className="px-4 py-4">Where</th>
                 </tr>
               </thead>
               <tbody>
-                {COMPARISON.map((row) => (
+                {comparison.map((row) => (
                   <tr key={row.format} className="border-t border-white/10">
                     <td className="px-4 py-4 font-semibold text-ice">{row.format}</td>
                     <td className="px-4 py-4 text-muted">{row.best}</td>
-                    <td className="px-4 py-4 text-muted">{row.where}</td>
                   </tr>
                 ))}
               </tbody>
@@ -178,9 +145,9 @@ export default function ServicesPage() {
           <p className="mt-4 text-sm text-muted">
             Not sure yet?{" "}
             <Link href="/contact" className="text-crimson hover:underline">
-              Contact A1 Fitness & Nutrition
-            </Link>{" "}
-            and we&apos;ll help you choose.
+              Book a consultation
+            </Link>
+            .
           </p>
         </div>
       </section>

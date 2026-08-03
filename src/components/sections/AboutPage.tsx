@@ -22,9 +22,23 @@ import {
 } from "lucide-react";
 import { Reveal } from "@/components/ui/SectionHeading";
 import { FinalCTA } from "@/components/ui/Cards";
-import { OFFER, VALUES, AUDIENCES, PROCESS_STEPS } from "@/lib/constants";
+import { VALUES, AUDIENCES, PROCESS_STEPS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import { useSiteSettings } from "@/providers/SettingsProvider";
+import type { CmsBits } from "@/lib/cms/types";
 
+export type AboutCms = {
+  hero?: CmsBits | null;
+  story?: CmsBits | null;
+  mission?: CmsBits | null;
+  audiences?: CmsBits | null;
+  inclusive?: CmsBits | null;
+  values?: CmsBits | null;
+  approach?: CmsBits | null;
+  locations?: CmsBits | null;
+  support?: CmsBits | null;
+  offer?: CmsBits | null;
+};
 const STORY_COLLAGE = [
   "/images/about-our-story-1.png",
   "/images/about-our-story-2.png",
@@ -88,13 +102,30 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function AboutPageContent() {
+export function AboutPageContent({ cms }: { cms?: AboutCms }) {
+  const settings = useSiteSettings();
+  const hero = cms?.hero;
+  const story = cms?.story;
+  const audiences = cms?.audiences;
+  const inclusive = cms?.inclusive;
+  const valuesSec = cms?.values;
+  const approach = cms?.approach;
+  const locations = cms?.locations;
+  const support = cms?.support;
+  const offer = cms?.offer;
+
+  const storyImages = [
+    story?.images.image1 || STORY_COLLAGE[0],
+    story?.images.image2 || STORY_COLLAGE[1],
+    story?.images.image3 || STORY_COLLAGE[2],
+  ];
+
   return (
     <>
       {/* Hero */}
       <section className="relative flex min-h-[100svh] items-end overflow-hidden pt-24 pb-12 sm:min-h-[88vh] sm:items-center sm:pt-28 sm:pb-16">
         <Image
-          src="/images/about-hero.png"
+          src={hero?.images.background || "/images/about-hero.png"}
           alt="Your A1 Fitness Coach ready to help you become your strongest self"
           fill
           priority
@@ -114,26 +145,24 @@ export function AboutPageContent() {
                   </Link>
                 </li>
                 <li aria-hidden="true">/</li>
-                <li className="text-white">About Us</li>
+                <li className="text-white">About</li>
               </ol>
             </nav>
 
             <Reveal>
-              <Eyebrow>The Story Behind A1</Eyebrow>
+              <Eyebrow>{hero?.fields.eyebrow || "The Story Behind A1"}</Eyebrow>
               <h1 className="font-display text-[clamp(2rem,8vw,4.6rem)] leading-[1.02] font-bold tracking-tight text-white uppercase">
-                Built to Help You Become Your{" "}
-                <span className="text-crimson">Strongest Self</span>
+                {hero?.fields.title || "Built to Help You Become Your Strongest Self"}
               </h1>
               <p className="mt-5 max-w-xl text-sm leading-relaxed text-white/70 md:text-base">
-                At A1 Fitness & Nutrition, the mission is simple: help you become the
-                strongest, healthiest version of yourself through customized coaching for
-                every fitness level and ability.
+                {hero?.fields.subtitle ||
+                  "At A1 Fitness & Nutrition, the mission is simple: help you become the strongest, healthiest version of yourself through customized coaching for every fitness level and ability."}
               </p>
               <Link
                 href="/contact"
                 className="mt-8 inline-flex w-full items-center justify-center rounded-md bg-crimson px-7 py-3.5 text-xs font-bold tracking-[0.14em] text-white uppercase shadow-[0_0_28px_rgba(229,9,20,0.4)] transition hover:bg-[#ff1a25] sm:w-auto"
               >
-                Start Your Journey
+                {hero?.fields.cta || "Start Your Journey"}
               </Link>
             </Reveal>
           </div>
@@ -147,14 +176,14 @@ export function AboutPageContent() {
             <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
               <div className="relative col-span-1 row-span-2 min-h-[220px] overflow-hidden rounded-xl sm:min-h-[280px] md:min-h-[420px]">
                 <Image
-                  src="/images/about-our-story-1.png"
+                  src={storyImages[0]}
                   alt="Trainer supporting a client through personalized coaching"
                   fill
                   className="object-cover object-center"
                   sizes="40vw"
                 />
               </div>
-              {STORY_COLLAGE.slice(1).map((src, i) => (
+              {storyImages.slice(1).map((src, i) => (
                 <div key={src} className="relative min-h-[130px] overflow-hidden rounded-xl md:min-h-[200px]">
                   <Image
                     src={src}
@@ -169,22 +198,13 @@ export function AboutPageContent() {
           </Reveal>
 
           <Reveal direction="right">
-            <Eyebrow>Our Story</Eyebrow>
+            <Eyebrow>{story?.fields.eyebrow || "Our Story"}</Eyebrow>
             <h2 className="font-display text-[clamp(1.85rem,7vw,3rem)] font-bold text-white uppercase sm:text-5xl">
-              Fitness Built
-              <br />
-              Around You
+              {story?.fields.title || "Coaching With Purpose"}
             </h2>
             <p className="mt-5 text-sm leading-relaxed text-white/65 md:text-base">
-              At A1 Fitness & Nutrition, my mission is simple: help you become the
-              strongest, healthiest version of yourself. I provide customized training
-              programs for every fitness level and proudly work with beginners, weight-loss
-              clients, strength and muscle-building clients, seniors, individuals with
-              disabilities, athletes and online coaching clients.
-            </p>
-            <p className="mt-4 text-sm leading-relaxed text-white/65 md:text-base">
-              Every program is created around your body, abilities, lifestyle and goals—so
-              progress feels realistic, respectful, and sustainable.
+              {story?.fields.body ||
+                "A1 Fitness & Nutrition was built to make personalized training accessible, supportive, and effective for every body."}
             </p>
           </Reveal>
         </div>
@@ -234,10 +254,9 @@ export function AboutPageContent() {
       <section className="bg-[#0b0b0d] py-14 sm:py-20 md:py-28">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10">
           <Reveal className="mb-12 text-center">
-            <Eyebrow>Who We Help</Eyebrow>
+            <Eyebrow>{audiences?.fields.eyebrow || "Who We Help"}</Eyebrow>
             <h2 className="font-display text-[clamp(1.85rem,7vw,3rem)] font-bold text-white uppercase sm:text-5xl">
-              Coaching for Every{" "}
-              <span className="text-crimson">Fitness Journey</span>
+              {audiences?.fields.title || "Coaching for Every Fitness Journey"}
             </h2>
           </Reveal>
           <div className="grid auto-rows-fr gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -265,7 +284,7 @@ export function AboutPageContent() {
       {/* Inclusive banner */}
       <section className="relative min-h-[320px] overflow-hidden sm:min-h-[420px] md:min-h-[520px]">
         <Image
-          src="/images/about-every-ability.png"
+          src={inclusive?.images.background || "/images/about-every-ability.png"}
           alt="Inclusive fitness community welcoming every ability and goal"
           fill
           className="object-cover object-center"
@@ -276,16 +295,11 @@ export function AboutPageContent() {
         <div className="relative z-10 flex min-h-[320px] items-end px-4 py-12 sm:min-h-[420px] sm:items-center sm:px-10 sm:py-16 md:min-h-[520px] lg:px-20">
           <Reveal>
             <h2 className="font-display max-w-xl text-[clamp(1.75rem,7vw,4rem)] leading-[1.05] font-bold text-white uppercase italic">
-              Every Ability.
-              <br />
-              Every Goal.
-              <br />
-              <span className="text-crimson">Every Person.</span>
+              {inclusive?.fields.title || "Every Ability. Every Goal. Every Person."}
             </h2>
             <p className="mt-5 max-w-lg text-sm text-white/70 md:text-base">
-              A1 Fitness & Nutrition proudly welcomes individuals of different ages,
-              experience levels and abilities. Training adapts with patience, respect and
-              care.
+              {inclusive?.fields.body ||
+                "A1 Fitness & Nutrition proudly welcomes individuals of different ages, experience levels and abilities. Training adapts with patience, respect and care."}
             </p>
           </Reveal>
         </div>
@@ -295,9 +309,9 @@ export function AboutPageContent() {
       <section className="bg-black py-14 sm:py-20 md:py-28">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10">
           <Reveal className="mb-12 text-center">
-            <Eyebrow>Our Values</Eyebrow>
+            <Eyebrow>{valuesSec?.fields.eyebrow || "Our Values"}</Eyebrow>
             <h2 className="font-display text-[clamp(1.85rem,7vw,3rem)] font-bold text-white uppercase sm:text-5xl">
-              What A1 <span className="text-crimson">Stands For</span>
+              {valuesSec?.fields.title || "What A1 Stands For"}
             </h2>
           </Reveal>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -325,11 +339,9 @@ export function AboutPageContent() {
       <section className="bg-[#0b0b0d] py-14 sm:py-20 md:py-28">
         <div className="mx-auto grid max-w-[1400px] items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:gap-16 lg:px-10">
           <Reveal direction="left">
-            <Eyebrow>The A1 Approach</Eyebrow>
+            <Eyebrow>{approach?.fields.eyebrow || "The A1 Approach"}</Eyebrow>
             <h2 className="font-display text-[clamp(1.85rem,7vw,3rem)] font-bold text-white uppercase sm:text-5xl">
-              A Clear Path to
-              <br />
-              <span className="text-crimson">Lasting Results</span>
+              {approach?.fields.title || "A Clear Path to Lasting Results"}
             </h2>
             <div className="mt-10 space-y-6">
               {PROCESS_STEPS.map((step, i) => {
@@ -357,7 +369,7 @@ export function AboutPageContent() {
           <Reveal direction="right">
             <div className="relative aspect-[4/5] overflow-hidden rounded-2xl md:aspect-[5/6]">
               <Image
-                src="/images/about-our-approach.png"
+                src={approach?.images.image || "/images/about-our-approach.png"}
                 alt="Personalized coaching strategy with Your A1 Fitness Coach"
                 fill
                 className="object-cover object-center"
@@ -372,9 +384,9 @@ export function AboutPageContent() {
       <section className="bg-black py-14 sm:py-20 md:py-28">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10">
           <Reveal className="mb-12 text-center">
-            <Eyebrow>Training Locations</Eyebrow>
+            <Eyebrow>{locations?.fields.eyebrow || "Flexibility"}</Eyebrow>
             <h2 className="font-display text-[clamp(1.85rem,7vw,3rem)] font-bold text-white uppercase sm:text-5xl">
-              Train Where You <span className="text-crimson">Thrive</span>
+              {locations?.fields.title || "Train Where It Works for You"}
             </h2>
           </Reveal>
           <div className="grid gap-5 md:grid-cols-3">
@@ -410,7 +422,7 @@ export function AboutPageContent() {
           <Reveal direction="left">
             <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
               <Image
-                src="/images/about-sec-after-where-you-can.png"
+                src={support?.images.image || "/images/about-sec-after-where-you-can.png"}
                 alt="Nutrition support that moves with your training goals"
                 fill
                 className="object-cover object-center"
@@ -419,11 +431,9 @@ export function AboutPageContent() {
             </div>
           </Reveal>
           <Reveal direction="right">
-            <Eyebrow>Ongoing Support</Eyebrow>
+            <Eyebrow>{support?.fields.eyebrow || "Ongoing Support"}</Eyebrow>
             <h2 className="font-display text-[clamp(1.85rem,7vw,3rem)] font-bold text-white uppercase sm:text-5xl">
-              Support That
-              <br />
-              Moves With You
+              {support?.fields.title || "Support That Moves With You"}
             </h2>
             <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
               {SUPPORT_FEATURES.map((feature, i) => {
@@ -452,7 +462,7 @@ export function AboutPageContent() {
       <section className="relative w-full bg-black">
         <div className="relative min-h-[300px] w-full overflow-hidden sm:min-h-[380px] md:min-h-[440px]">
           <Image
-            src="/images/claim-offer.png"
+            src={offer?.images.background || "/images/claim-offer.png"}
             alt=""
             fill
             className="object-cover object-center"
@@ -462,20 +472,21 @@ export function AboutPageContent() {
           <div className="absolute inset-0 bg-black/35" />
           <div className="relative z-10 flex min-h-[260px] flex-col items-center justify-center px-4 py-14 text-center sm:min-h-[380px] sm:py-16 md:min-h-[440px]">
             <p className="mb-3 text-[10px] font-bold tracking-[0.24em] text-crimson uppercase sm:text-[11px] sm:tracking-[0.3em]">
-              Limited Offer
+              {offer?.fields.eyebrow || "Limited Offer"}
             </p>
             <h2 className="font-display max-w-4xl text-[clamp(1.5rem,6.5vw,3.4rem)] leading-[1.08] font-bold text-white uppercase italic">
-              Train Stronger.{" "}
-              <span className="text-crimson">Eat Smarter.</span>
+              {offer?.fields.title || settings.offerTitle || "Train Stronger. Eat Smarter."}
             </h2>
             <p className="mt-3 max-w-2xl text-sm text-white/70">
-              Get 50% off your nutrition program when you purchase training sessions.
+              {offer?.fields.body ||
+                settings.offerNote ||
+                "Get 50% off your nutrition program when you purchase training sessions."}
             </p>
             <Link
-              href={OFFER.href}
+              href={settings.offerHref || "/contact?offer=nutrition"}
               className="mt-7 inline-flex w-full max-w-xs items-center justify-center rounded-md bg-crimson px-8 py-3.5 text-xs font-bold tracking-[0.16em] text-white uppercase shadow-[0_0_28px_rgba(229,9,20,0.45)] transition hover:bg-[#ff1a25] sm:mt-8 sm:w-auto sm:max-w-none"
             >
-              Claim Your Offer
+              {offer?.fields.cta || settings.offerCta || "Claim Your Offer"}
             </Link>
           </div>
         </div>

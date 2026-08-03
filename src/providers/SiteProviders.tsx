@@ -14,6 +14,7 @@ import {
   ReducedMotionProvider,
   useMotionSettings,
 } from "@/providers/ReducedMotionProvider";
+import { SettingsProvider } from "@/providers/SettingsProvider";
 
 function RouteOverlay() {
   const pathname = usePathname();
@@ -79,10 +80,16 @@ function RouteOverlay() {
 
 function SiteShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const { introComplete, completeIntro, prefersReducedMotion, mounted } =
-    useMotionSettings();
+  const { introPhase, completeIntro } = useMotionSettings();
 
-  const showIntro = mounted && !introComplete && !prefersReducedMotion;
+  // Admin panel has its own chrome — skip public site shell/intro
+  if (pathname.startsWith("/admin")) {
+    return <>{children}</>;
+  }
+
+  const showBootGate = introPhase === "boot";
+  const showIntro = introPhase === "intro";
+  const siteReady = introPhase === "ready";
 
   return (
     <>
@@ -93,29 +100,54 @@ function SiteShell({ children }: { children: ReactNode }) {
         Skip to content
       </a>
 
+      {/* Opaque gate until we know whether to play intro — prevents hero flash */}
+      {showBootGate && (
+        <div
+          className="fixed inset-0 z-[100] bg-black"
+          aria-hidden="true"
+        />
+      )}
+
       <AnimatePresence mode="wait">
         {showIntro && (
           <CinematicIntro key="cinematic-intro" onComplete={completeIntro} />
         )}
       </AnimatePresence>
 
-      <ScrollProgress />
-      <Navbar />
-      <RouteOverlay />
-      <main id="main-content" className="flex-1">
-        <PageTransition key={pathname}>{children}</PageTransition>
-      </main>
-      <Footer />
-      <BackToTop />
-      <CustomCursor />
+      <div
+        aria-hidden={!siteReady}
+        className={
+          siteReady
+            ? "contents"
+            : "pointer-events-none invisible fixed inset-0 overflow-hidden opacity-0"
+        }
+      >
+        <ScrollProgress />
+        <Navbar />
+        <RouteOverlay />
+        <main id="main-content" className="flex-1">
+          <PageTransition key={pathname}>{children}</PageTransition>
+        </main>
+        <Footer />
+        <BackToTop />
+        <CustomCursor />
+      </div>
     </>
   );
 }
 
-export function SiteProviders({ children }: { children: ReactNode }) {
+export function SiteProviders({
+  children,
+  settings,
+}: {
+  children: ReactNode;
+  settings?: Partial<import("@/providers/SettingsProvider").SiteSettings> | null;
+}) {
   return (
-    <ReducedMotionProvider>
-      <SiteShell>{children}</SiteShell>
-    </ReducedMotionProvider>
+    <SettingsProvider settings={settings}>
+      <ReducedMotionProvider>
+        <SiteShell>{children}</SiteShell>
+      </ReducedMotionProvider>
+    </SettingsProvider>
   );
 }

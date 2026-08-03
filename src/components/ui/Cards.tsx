@@ -16,9 +16,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { MagneticButton } from "./MagneticButton";
-import { SITE, OFFER } from "@/lib/constants";
+import { useSiteSettings } from "@/providers/SettingsProvider";
 import type { Service } from "@/lib/services";
-
 const ICONS: Record<string, LucideIcon> = {
   Sparkles,
   Target,
@@ -116,6 +115,7 @@ export function ServiceCard({
 }
 
 export function OfferBanner({ className }: { className?: string }) {
+  const settings = useSiteSettings();
   return (
     <section className={cn("relative overflow-hidden py-16 md:py-20", className)}>
       <div className="absolute inset-0 bg-hero-gradient opacity-90" />
@@ -125,12 +125,12 @@ export function OfferBanner({ className }: { className?: string }) {
           Limited Offer
         </p>
         <h2 className="font-heading text-3xl text-white sm:text-4xl md:text-5xl">
-          {OFFER.title}
+          {settings.offerTitle}
         </h2>
-        <p className="mx-auto mt-4 max-w-2xl text-sm text-white/80">{OFFER.note}</p>
+        <p className="mx-auto mt-4 max-w-2xl text-sm text-white/80">{settings.offerNote}</p>
         <div className="mt-8 flex justify-center">
-          <MagneticButton href={OFFER.href} variant="secondary" showArrow>
-            {OFFER.cta}
+          <MagneticButton href={settings.offerHref} variant="secondary" showArrow>
+            {settings.offerCta}
           </MagneticButton>
         </div>
       </div>
@@ -230,6 +230,7 @@ export function FinalCTA({
   title?: string;
   description?: string;
 }) {
+  const settings = useSiteSettings();
   return (
     <section className="relative w-full bg-black" aria-labelledby="shared-final-cta-heading">
       <div className="relative min-h-[340px] w-full overflow-hidden sm:min-h-[440px] md:min-h-[520px]">
@@ -262,10 +263,10 @@ export function FinalCTA({
                 Book a Consultation
               </Link>
               <a
-                href={SITE.phoneHref}
+                href={settings.phoneHref}
                 className="inline-flex w-full items-center justify-center rounded-md border border-white/70 bg-transparent px-7 py-3.5 text-xs font-bold tracking-[0.14em] text-white uppercase transition hover:border-white hover:bg-white/5 sm:w-auto"
               >
-                Call {SITE.phone}
+                Call {settings.phone}
               </a>
             </div>
           </div>

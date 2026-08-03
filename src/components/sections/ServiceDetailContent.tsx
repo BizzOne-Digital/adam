@@ -8,16 +8,23 @@ import { FAQAccordion } from "@/components/ui/FAQAccordion";
 import { Breadcrumbs, FinalCTA, OfferBanner } from "@/components/ui/Cards";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import type { Service } from "@/lib/services";
-import { getRelatedServices } from "@/lib/services";
 
-export function ServiceDetailContent({ service }: { service: Service }) {
-  const related = getRelatedServices(service.related);
+export function ServiceDetailContent({
+  service,
+  relatedServices = [],
+}: {
+  service: Service;
+  relatedServices?: Service[];
+}) {
+  const related = relatedServices;
+  const heroSrc = service.heroImage || service.image;
+  const detailSrc = service.detailImage || service.image;
 
   return (
     <>
       <section className="relative flex min-h-[56svh] items-end overflow-hidden pt-24 pb-12 sm:min-h-[62vh] sm:pt-28 sm:pb-16 md:min-h-[72vh]">
         <Image
-          src={service.image}
+          src={heroSrc}
           alt={service.imageAlt}
           fill
           priority
@@ -72,7 +79,7 @@ export function ServiceDetailContent({ service }: { service: Service }) {
           </Reveal>
           <Reveal direction="right">
             <RevealImage
-              src={service.image}
+              src={detailSrc}
               alt={service.imageAlt}
               className="h-80 md:h-[28rem]"
               parallax

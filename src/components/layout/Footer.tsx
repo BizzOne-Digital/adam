@@ -3,10 +3,25 @@
 import Image from "next/image";
 import Link from "next/link";
 import { AtSign, Mail, MapPin, Phone } from "lucide-react";
-import { SITE, NAV_LINKS } from "@/lib/constants";
+import { NAV_LINKS } from "@/lib/constants";
 import { SERVICES } from "@/lib/services";
+import { useSiteSettings } from "@/providers/SettingsProvider";
+import { useEffect, useState } from "react";
+import type { Service } from "@/lib/services";
 
 export function Footer() {
+  const settings = useSiteSettings();
+  const [services, setServices] = useState<Service[]>(SERVICES);
+
+  useEffect(() => {
+    fetch("/api/content/services")
+      .then((r) => r.json())
+      .then((data) => {
+        if (Array.isArray(data) && data.length) setServices(data);
+      })
+      .catch(() => undefined);
+  }, []);
+
   return (
     <footer className="relative overflow-hidden border-t border-white/10 bg-rich-black">
       <div className="bg-red-glow pointer-events-none absolute -bottom-24 left-1/2 h-72 w-72 -translate-x-1/2 opacity-60" />
@@ -16,8 +31,8 @@ export function Footer() {
             <Link href="/" className="inline-flex items-center gap-3">
               <span className="relative h-16 w-16">
                 <Image
-                  src={SITE.logo}
-                  alt={SITE.name}
+                  src={settings.logo}
+                  alt={settings.name}
                   fill
                   className="object-contain"
                   sizes="64px"
@@ -30,7 +45,7 @@ export function Footer() {
             </p>
             <p className="mt-4 inline-flex items-start gap-2 text-sm text-silver">
               <MapPin className="mt-0.5 h-4 w-4 text-crimson" />
-              {SITE.serviceArea}
+              {settings.serviceArea}
             </p>
           </div>
 
@@ -57,7 +72,7 @@ export function Footer() {
               Services
             </h3>
             <ul className="space-y-2">
-              {SERVICES.map((service) => (
+              {services.map((service) => (
                 <li key={service.slug}>
                   <Link
                     href={service.href}
@@ -77,31 +92,34 @@ export function Footer() {
             <ul className="space-y-3 text-sm">
               <li>
                 <a
-                  href={SITE.phoneHref}
+                  href={settings.phoneHref}
                   className="inline-flex items-center gap-2 text-muted transition hover:text-ice"
                 >
                   <Phone className="h-4 w-4 text-crimson" />
-                  {SITE.phone}
+                  {settings.phone}
                 </a>
               </li>
               <li>
                 <a
-                  href={SITE.emailHref}
+                  href={settings.emailHref}
                   className="inline-flex max-w-full items-start gap-2 text-muted transition hover:text-ice"
                 >
                   <Mail className="mt-0.5 h-4 w-4 shrink-0 text-crimson" />
-                  <span className="break-all">{SITE.email}</span>
+                  <span className="break-all">{settings.email}</span>
                 </a>
               </li>
               <li>
                 <a
-                  href={SITE.socialHref}
+                  href={settings.socialHref}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 text-muted transition hover:text-ice"
                 >
                   <AtSign className="h-4 w-4 text-crimson" />
-                  {SITE.social}
+                  <span>
+                    {settings.socialLabel || "Instagram"}{" "}
+                    <span className="text-silver">{settings.social}</span>
+                  </span>
                 </a>
               </li>
             </ul>
@@ -111,7 +129,9 @@ export function Footer() {
         <div className="metallic-line my-8" />
 
         <div className="flex flex-col gap-4 text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} {SITE.name}. All rights reserved.</p>
+          <p>
+            © {new Date().getFullYear()} {settings.name}. All rights reserved.
+          </p>
           <div className="flex flex-wrap gap-4">
             <Link href="/privacy-policy" className="hover:text-ice">
               Privacy Policy
