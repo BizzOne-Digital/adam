@@ -154,7 +154,7 @@ export function HomeHero({ cms }: { cms?: CmsBits | null }) {
         alt="Inclusive personal training session with a coach guiding a client during a cable row workout"
         fill
         priority
-        className="object-cover object-[62%_center] sm:object-[72%_center] lg:object-[75%_center]"
+        className="object-cover object-[78%_center] sm:object-[85%_center] lg:object-[90%_center]"
         sizes="100vw"
       />
       <div className="absolute inset-0 bg-gradient-to-r from-black via-black/90 to-black/40 sm:via-black/85 sm:to-black/20 lg:to-transparent" />
