@@ -132,8 +132,8 @@ export function AboutPageContent({ cms }: { cms?: AboutCms }) {
           className="object-cover object-[88%_center] sm:object-[75%_center] md:object-[82%_center] lg:object-right"
           sizes="100vw"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/92 to-black/40 sm:via-black/88 sm:to-black/25" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-black/40 sm:via-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/35 to-transparent sm:from-black sm:via-black/88 sm:to-black/25" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/25 sm:from-black sm:via-transparent sm:to-black/40" />
 
         <div className="relative z-10 mx-auto w-full max-w-[1400px] px-4 sm:px-6 lg:px-10">
           <div className="max-w-2xl">
