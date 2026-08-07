@@ -150,6 +150,7 @@ export default function AdminPageEditor() {
                 label={`Image: ${key}`}
                 value={value}
                 onChange={(url) => updateImage(si, key, url)}
+                folder="pages"
               />
             ))}
           </div>

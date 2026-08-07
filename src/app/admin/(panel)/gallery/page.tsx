@@ -152,7 +152,12 @@ export default function AdminGalleryPage() {
 
         <div className="space-y-4">
           <AdminCard title="Add image to category">
-            <ImageUploadField label="Upload / set path" value="" onChange={addImage} />
+            <ImageUploadField
+              label="Upload image"
+              value=""
+              onChange={addImage}
+              folder="gallery"
+            />
           </AdminCard>
 
           <AdminCard title="Images">

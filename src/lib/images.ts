@@ -1,5 +1,6 @@
 export const GALLERY_CATEGORIES = [
   "All",
+  "Before and After",
   "Personal Training",
   "In-Home Training",
   "Gym Training",
@@ -81,6 +82,27 @@ export const IMAGES = {
 } as const;
 
 export const GALLERY_ITEMS: GalleryItem[] = [
+  {
+    id: "ba1",
+    src: "/images/before-after-alyssa.png",
+    alt: "Alyssa before and after fitness transformation",
+    caption: "Alyssa",
+    category: "Before and After",
+  },
+  {
+    id: "ba2",
+    src: "/images/before-after-jodi.png",
+    alt: "Jodi before and after nutrition client transformation",
+    caption: "Jodi · Nutrition Client",
+    category: "Before and After",
+  },
+  {
+    id: "ba3",
+    src: "/images/before-after-taylor.png",
+    alt: "Taylor before and after nutrition and training transformation",
+    caption: "Taylor · Nutrition and Training Client",
+    category: "Before and After",
+  },
   {
     id: "g1",
     src: "/images/gallery-personal-1.png",

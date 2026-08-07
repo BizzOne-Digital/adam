@@ -366,6 +366,7 @@ async function seed() {
   await GalleryCategory.deleteMany({});
 
   const categoryNames = [
+    "Before and After",
     "Personal Training",
     "In-Home Training",
     "Gym Training",

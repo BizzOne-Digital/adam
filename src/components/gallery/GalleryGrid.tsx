@@ -121,8 +121,8 @@ export function GalleryGrid({
                   className="object-cover transition duration-700 group-hover:scale-110"
                 />
               </span>
-              <span className="absolute inset-0 bg-gradient-to-t from-obsidian via-transparent to-transparent opacity-80" />
-              <span className="absolute right-4 bottom-4 left-4 text-left">
+              <span className="absolute inset-0 bg-gradient-to-t from-obsidian/90 via-transparent to-transparent opacity-100 transition duration-300 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-visible:opacity-100" />
+              <span className="absolute right-4 bottom-4 left-4 text-left opacity-100 transition duration-300 sm:translate-y-2 sm:opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100 sm:group-focus-visible:translate-y-0 sm:group-focus-visible:opacity-100">
                 <span className="block text-[10px] tracking-[0.2em] text-crimson uppercase">
                   {item.category}
                 </span>

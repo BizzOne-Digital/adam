@@ -159,6 +159,7 @@ export default function AdminServiceEditPage() {
               label="Main service image (listing card)"
               value={form.image}
               onChange={(url) => set("image", url)}
+              folder="products"
             />
             <Field label="Image alt">
               <TextInput
@@ -213,11 +214,13 @@ export default function AdminServiceEditPage() {
                 label="Hero background"
                 value={form.heroImage}
                 onChange={(url) => set("heroImage", url)}
+                folder="products"
               />
               <ImageUploadField
                 label="Detail section image"
                 value={form.detailImage}
                 onChange={(url) => set("detailImage", url)}
+                folder="products"
               />
               <Field label="Benefits (one per line)">
                 <TextArea

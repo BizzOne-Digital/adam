@@ -13,6 +13,7 @@ import { SERVICES, type Service } from "@/lib/services";
 import { GALLERY_ITEMS, GALLERY_CATEGORIES } from "@/lib/images";
 import { REAL_FAQS, REAL_TESTIMONIALS } from "@/lib/content/reviews";
 import type { CmsBits, CmsPage, CmsSection } from "@/lib/cms/types";
+import { publicImageSrc } from "@/lib/media";
 
 export type { CmsBits, CmsPage, CmsSection } from "@/lib/cms/types";
 
@@ -38,15 +39,15 @@ export async function getSettings() {
         social: SITE.social,
         socialHref: SITE.socialHref,
         socialLabel: "Instagram",
-        logo: SITE.logo,
-        url: SITE.url,
-        serviceArea: SITE.serviceArea,
-        businessHours: BUSINESS_HOURS,
-        offerTitle: OFFER.title,
-        offerNote: OFFER.note,
-        offerCta: OFFER.cta,
-        offerHref: OFFER.href,
-        whatsappHref: SITE.whatsappHref,
+      logo: SITE.logo,
+      url: SITE.url,
+      serviceArea: SITE.serviceArea,
+      businessHours: BUSINESS_HOURS,
+      offerTitle: OFFER.title,
+      offerNote: OFFER.note,
+      offerCta: OFFER.cta,
+      offerHref: OFFER.href,
+      whatsappHref: SITE.whatsappHref,
       };
     }
     return {
@@ -60,7 +61,7 @@ export async function getSettings() {
       social: doc.social,
       socialHref: doc.socialHref,
       socialLabel: doc.socialLabel,
-      logo: doc.logo,
+      logo: publicImageSrc(doc.logo),
       url: doc.url,
       serviceArea: doc.serviceArea,
       businessHours: doc.businessHours,
@@ -114,7 +115,12 @@ export async function getPage(slug: string): Promise<CmsPage | null> {
         key: s.key,
         title: s.title,
         fields: mapToObject(s.fields as never),
-        images: mapToObject(s.images as never),
+        images: Object.fromEntries(
+          Object.entries(mapToObject(s.images as never)).map(([key, val]) => [
+            key,
+            publicImageSrc(val),
+          ]),
+        ),
       })),
     };
   } catch {
@@ -143,7 +149,7 @@ export async function getServices(): Promise<Service[]> {
       href: `/services/${s.slug}`,
       summary: s.summary,
       overview: s.overview,
-      image: s.image,
+      image: publicImageSrc(s.image),
       imageAlt: s.imageAlt || s.title,
       benefits: s.benefits || [],
       suitableFor: s.suitableFor || [],
@@ -161,8 +167,8 @@ export async function getServices(): Promise<Service[]> {
       related: s.related || [],
       accent: (s.accent as Service["accent"]) || "red",
       showOffer: s.showOffer,
-      heroImage: s.heroImage || s.image,
-      detailImage: s.detailImage || s.image,
+      heroImage: publicImageSrc(s.heroImage || s.image),
+      detailImage: publicImageSrc(s.detailImage || s.image),
     })) as Service[];
   } catch {
     return SERVICES;
@@ -239,7 +245,7 @@ export async function getGalleryData() {
       categories: ["All", ...categories.map((c) => c.name)],
       items: items.map((item) => ({
         id: String(item._id),
-        src: item.src,
+        src: publicImageSrc(item.src),
         alt: item.alt,
         caption: item.caption,
         category: catMap.get(String(item.categoryId)) || "Personal Training",

@@ -5,6 +5,7 @@ import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { cn } from "@/lib/utils";
 import { useMotionSettings } from "@/providers/ReducedMotionProvider";
+import { publicImageSrc } from "@/lib/media";
 
 interface RevealImageProps {
   src: string;
@@ -48,7 +49,7 @@ export function RevealImage({
       />
       <motion.div style={{ y }} className="relative h-full w-full">
         <Image
-          src={src}
+          src={publicImageSrc(src)}
           alt={alt}
           fill
           priority={priority}

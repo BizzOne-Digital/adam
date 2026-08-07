@@ -108,6 +108,7 @@ export default function AdminSettingsPage() {
             label="Logo"
             value={form.logo || ""}
             onChange={(url) => set("logo", url)}
+            folder="misc"
           />
         </div>
       </AdminCard>

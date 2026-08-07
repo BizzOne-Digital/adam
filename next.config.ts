@@ -8,6 +8,12 @@ const nextConfig: NextConfig = {
         hostname: "images.unsplash.com",
       },
     ],
+    // Allow Next/Image for Mongo-backed upload URLs served by the app
+    localPatterns: [
+      { pathname: "/images/**" },
+      { pathname: "/api/uploads/**" },
+      { pathname: "/uploads/**" },
+    ],
   },
 };
 
