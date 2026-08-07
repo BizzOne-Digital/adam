@@ -129,7 +129,7 @@ export function AboutPageContent({ cms }: { cms?: AboutCms }) {
           alt="Your A1 Fitness Coach ready to help you become your strongest self"
           fill
           priority
-          className="object-cover object-[58%_center] sm:object-[70%_center] md:object-right"
+          className="object-cover object-[88%_center] sm:object-[75%_center] md:object-[82%_center] lg:object-right"
           sizes="100vw"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black via-black/92 to-black/40 sm:via-black/88 sm:to-black/25" />
