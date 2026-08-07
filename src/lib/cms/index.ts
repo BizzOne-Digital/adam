@@ -241,15 +241,36 @@ export async function getGalleryData() {
       };
     }
     const catMap = new Map(categories.map((c) => [String(c._id), c.name]));
+    const mongoItems = items.map((item) => ({
+      id: String(item._id),
+      src: publicImageSrc(item.src),
+      alt: item.alt,
+      caption: item.caption,
+      category: catMap.get(String(item.categoryId)) || "Personal Training",
+    }));
+
+    // Merge static items (e.g. Before and After) when production Mongo
+    // was seeded before those assets existed.
+    const existingSrc = new Set(mongoItems.map((i) => i.src));
+    const missingStatic = GALLERY_ITEMS.filter((i) => !existingSrc.has(i.src)).map(
+      (i) => ({
+        id: i.id,
+        src: publicImageSrc(i.src),
+        alt: i.alt,
+        caption: i.caption,
+        category: i.category,
+      }),
+    );
+
+    const catNames = categories.map((c) => c.name);
+    const catSet = new Set(catNames);
+    const missingCats = GALLERY_CATEGORIES.filter(
+      (c) => c !== "All" && !catSet.has(c),
+    );
+
     return {
-      categories: ["All", ...categories.map((c) => c.name)],
-      items: items.map((item) => ({
-        id: String(item._id),
-        src: publicImageSrc(item.src),
-        alt: item.alt,
-        caption: item.caption,
-        category: catMap.get(String(item.categoryId)) || "Personal Training",
-      })),
+      categories: ["All", ...catNames, ...missingCats],
+      items: [...missingStatic, ...mongoItems],
     };
   } catch {
     return {
