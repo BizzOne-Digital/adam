@@ -22,7 +22,7 @@ const TRAINING_OPTIONS = [
   "Help Me Choose",
 ] as const;
 
-const CONTACT_METHODS = ["Phone", "Email", "Either"] as const;
+const CONTACT_METHODS = ["Phone", "WhatsApp"] as const;
 const FITNESS_LEVELS = ["Beginner", "Intermediate", "Advanced", "Returning After a Break"] as const;
 const GOALS = [
   "Build Strength",
@@ -169,10 +169,10 @@ export function ContactForm() {
   const helper = useMemo(
     () =>
       status === "success"
-        ? "Thank you. Your consultation request has been prepared. Please also call or email if you need faster assistance."
+        ? "Thank you. For the fastest reply, please call or WhatsApp us."
         : status === "error"
           ? "Please review the highlighted fields and try again."
-          : "Share what you need—we'll help you choose the right training path.",
+          : "Prefer a faster reply? Call or WhatsApp us — we don't use email for booking.",
     [status],
   );
 

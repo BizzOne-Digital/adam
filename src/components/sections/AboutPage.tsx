@@ -200,12 +200,55 @@ export function AboutPageContent({ cms }: { cms?: AboutCms }) {
           <Reveal direction="right">
             <Eyebrow>{story?.fields.eyebrow || "Our Story"}</Eyebrow>
             <h2 className="font-display text-[clamp(1.85rem,7vw,3rem)] font-bold text-white uppercase sm:text-5xl">
-              {story?.fields.title || "Coaching With Purpose"}
+              {story?.fields.title || "Adam Erlich"}
             </h2>
-            <p className="mt-5 text-sm leading-relaxed text-white/65 md:text-base">
-              {story?.fields.body ||
-                "A1 Fitness & Nutrition was built to make personalized training accessible, supportive, and effective for every body."}
+            <p className="mt-4 text-sm font-semibold tracking-wide text-crimson uppercase sm:text-[15px]">
+              {story?.fields.intro || "Been in fitness industry for over 30 years"}
             </p>
+            <ul className="mt-5 space-y-2.5 text-sm leading-relaxed text-white/70 md:text-base">
+              <li className="flex gap-2.5">
+                <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-crimson" aria-hidden="true" />
+                <span>
+                  {story?.fields.point1 ||
+                    "Former competitive bodybuilder & powerlifter"}
+                </span>
+              </li>
+              <li className="flex gap-2.5">
+                <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-crimson" aria-hidden="true" />
+                <span>
+                  {story?.fields.point2 ||
+                    "Father of a child on the autism spectrum"}
+                </span>
+              </li>
+            </ul>
+
+            <div className="mt-8 border-t border-white/10 pt-6">
+              <p className="mb-4 text-[11px] font-bold tracking-[0.22em] text-white/50 uppercase">
+                {story?.fields.sayingsLabel || "Some of my favorite sayings"}
+              </p>
+              <blockquote className="space-y-4">
+                {(
+                  [
+                    story?.fields.saying1 ||
+                      "The only bad workout is the one that didn't happen",
+                    story?.fields.saying2 ||
+                      "The heavier weight in the gym is the front door",
+                    story?.fields.saying3 ||
+                      "Celebrate progress not perfection",
+                  ] as string[]
+                ).map((quote) => (
+                  <p
+                    key={quote}
+                    className="border-l-2 border-crimson/70 pl-4 text-sm leading-relaxed text-white/80 italic md:text-[15px]"
+                  >
+                    “{quote}”
+                  </p>
+                ))}
+              </blockquote>
+              <p className="mt-5 text-sm font-semibold tracking-wide text-crimson uppercase">
+                {story?.fields.sayingsNote || "I live by these sayings"}
+              </p>
+            </div>
           </Reveal>
         </div>
       </section>

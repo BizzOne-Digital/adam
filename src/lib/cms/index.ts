@@ -46,6 +46,7 @@ export async function getSettings() {
         offerNote: OFFER.note,
         offerCta: OFFER.cta,
         offerHref: OFFER.href,
+        whatsappHref: SITE.whatsappHref,
       };
     }
     return {
@@ -67,6 +68,9 @@ export async function getSettings() {
       offerNote: doc.offerNote,
       offerCta: doc.offerCta,
       offerHref: doc.offerHref,
+      whatsappHref:
+        `https://wa.me/${String(doc.phoneHref || SITE.phoneHref).replace(/\D/g, "")}` ||
+        SITE.whatsappHref,
     };
   } catch {
     return {
@@ -88,6 +92,7 @@ export async function getSettings() {
       offerNote: OFFER.note,
       offerCta: OFFER.cta,
       offerHref: OFFER.href,
+      whatsappHref: SITE.whatsappHref,
     };
   }
 }

@@ -9,6 +9,7 @@ export type SiteSettings = {
   tagline: string;
   phone: string;
   phoneHref: string;
+  whatsappHref: string;
   email: string;
   emailHref: string;
   social: string;
@@ -30,6 +31,7 @@ const defaultSettings: SiteSettings = {
   tagline: SITE.tagline,
   phone: SITE.phone,
   phoneHref: SITE.phoneHref,
+  whatsappHref: SITE.whatsappHref,
   email: SITE.email,
   emailHref: SITE.emailHref,
   social: SITE.social,
@@ -61,5 +63,9 @@ export function SettingsProvider({
 }
 
 export function useSiteSettings() {
-  return useContext(SettingsContext);
+  const settings = useContext(SettingsContext);
+  const digits = settings.phoneHref.replace(/\D/g, "") || "15163103338";
+  const whatsappHref =
+    settings.whatsappHref || `https://wa.me/${digits}`;
+  return { ...settings, whatsappHref };
 }

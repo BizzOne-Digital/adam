@@ -117,13 +117,6 @@ export const GALLERY_ITEMS: GalleryItem[] = [
     category: "Gym Training",
   },
   {
-    id: "g6",
-    src: "/images/gallery-gym-2.png",
-    alt: "Form-focused gym coaching with free weights",
-    caption: "Form-Focused Gym Coaching",
-    category: "Gym Training",
-  },
-  {
     id: "g7",
     src: "/images/gallery-online-1.png",
     alt: "Client following a remote online coaching plan",

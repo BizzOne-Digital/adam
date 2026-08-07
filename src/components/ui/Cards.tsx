@@ -226,9 +226,15 @@ export function Counter({
 export function FinalCTA({
   title = "Your Stronger Life Starts Here",
   description = "Let's build a plan that works for you.",
+  primaryHref = "/contact",
+  primaryLabel = "Book a Consultation",
+  primaryExternal = false,
 }: {
   title?: string;
   description?: string;
+  primaryHref?: string;
+  primaryLabel?: string;
+  primaryExternal?: boolean;
 }) {
   const settings = useSiteSettings();
   return (
@@ -256,12 +262,23 @@ export function FinalCTA({
             </h2>
             <p className="mt-4 text-sm text-white/80 sm:text-base">{description}</p>
             <div className="mt-7 flex w-full flex-col gap-3 sm:mt-8 sm:w-auto sm:flex-row sm:items-center">
-              <Link
-                href="/contact"
-                className="inline-flex w-full items-center justify-center rounded-md bg-crimson px-7 py-3.5 text-xs font-bold tracking-[0.14em] text-white uppercase shadow-[0_0_28px_rgba(229,9,20,0.4)] transition hover:bg-[#ff1a25] sm:w-auto"
-              >
-                Book a Consultation
-              </Link>
+              {primaryExternal ? (
+                <a
+                  href={primaryHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex w-full items-center justify-center rounded-md bg-crimson px-7 py-3.5 text-xs font-bold tracking-[0.14em] text-white uppercase shadow-[0_0_28px_rgba(229,9,20,0.4)] transition hover:bg-[#ff1a25] sm:w-auto"
+                >
+                  {primaryLabel}
+                </a>
+              ) : (
+                <Link
+                  href={primaryHref}
+                  className="inline-flex w-full items-center justify-center rounded-md bg-crimson px-7 py-3.5 text-xs font-bold tracking-[0.14em] text-white uppercase shadow-[0_0_28px_rgba(229,9,20,0.4)] transition hover:bg-[#ff1a25] sm:w-auto"
+                >
+                  {primaryLabel}
+                </Link>
+              )}
               <a
                 href={settings.phoneHref}
                 className="inline-flex w-full items-center justify-center rounded-md border border-white/70 bg-transparent px-7 py-3.5 text-xs font-bold tracking-[0.14em] text-white uppercase transition hover:border-white hover:bg-white/5 sm:w-auto"

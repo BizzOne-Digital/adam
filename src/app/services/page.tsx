@@ -1,10 +1,10 @@
 import Image from "next/image";
-import Link from "next/link";
 import { createMetadata } from "@/lib/seo";
 import { getPage, getSection, getServices } from "@/lib/cms";
 import { PageHero, FinalCTA } from "@/components/ui/Cards";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { Reveal } from "@/components/ui/SectionHeading";
+import { SITE, whatsappLink } from "@/lib/constants";
 
 export const metadata = createMetadata({
   title: "Services",
@@ -82,17 +82,25 @@ export default async function ServicesPage() {
                   </ul>
                 </div>
                 <p className="mt-4 text-sm font-semibold text-silver">
-                  Contact for personalized program options.
+                  Call or WhatsApp for personalized program options.
                 </p>
-                <div className="mt-8 flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+                <div className="mt-8 flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap">
                   <MagneticButton href={service.href} showArrow>
                     Explore Service
                   </MagneticButton>
+                  <MagneticButton href={SITE.phoneHref} external>
+                    Call Now
+                  </MagneticButton>
                   <MagneticButton
-                    href={`/contact?service=${service.slug}`}
+                    href={whatsappLink(
+                      `Hi Adam, I'm interested in ${service.title} with A1 Fitness.`,
+                    )}
                     variant="ghost"
+                    external
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
-                    Get Started
+                    WhatsApp
                   </MagneticButton>
                 </div>
               </Reveal>
@@ -144,9 +152,18 @@ export default async function ServicesPage() {
           </div>
           <p className="mt-4 text-sm text-muted">
             Not sure yet?{" "}
-            <Link href="/contact" className="text-crimson hover:underline">
-              Book a consultation
-            </Link>
+            <a href={SITE.phoneHref} className="text-crimson hover:underline">
+              Call {SITE.phone}
+            </a>{" "}
+            or{" "}
+            <a
+              href={whatsappLink("Hi Adam, I'd like help choosing a training plan.")}
+              className="text-crimson hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              WhatsApp us
+            </a>
             .
           </p>
         </div>

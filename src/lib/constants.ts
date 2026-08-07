@@ -4,6 +4,8 @@ export const SITE = {
   tagline: "Strength. Health. Confidence.",
   phone: "(516) 310-3338",
   phoneHref: "tel:+15163103338",
+  /** WhatsApp chat — same number as phone */
+  whatsappHref: "https://wa.me/15163103338",
   email: "a1training5438@gmail.com",
   emailHref: "mailto:a1training5438@gmail.com",
   social: "@adamsrlichfitness5438",
@@ -13,6 +15,13 @@ export const SITE = {
   url: "https://a1fitnessnutrition.com",
   serviceArea: "Serving all of Long Island",
 } as const;
+
+/** Build a WhatsApp deep link with an optional prefilled message. */
+export function whatsappLink(message?: string, base: string = SITE.whatsappHref) {
+  if (!message) return base;
+  const sep = base.includes("?") ? "&" : "?";
+  return `${base}${sep}text=${encodeURIComponent(message)}`;
+}
 
 export type NavLink = {
   label: string;

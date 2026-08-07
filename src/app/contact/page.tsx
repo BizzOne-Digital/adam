@@ -1,16 +1,17 @@
 import { Suspense } from "react";
 import Image from "next/image";
-import { AtSign, Mail, MapPin, Phone } from "lucide-react";
+import { AtSign, MapPin, MessageCircle, Phone } from "lucide-react";
 import { createMetadata } from "@/lib/seo";
 import { getFaqs, getPage, getSection, getSettings } from "@/lib/cms";
 import { PageHero, FinalCTA } from "@/components/ui/Cards";
 import { ContactForm } from "@/components/contact/ContactForm";
 import { FAQAccordion } from "@/components/ui/FAQAccordion";
+import { SITE, whatsappLink } from "@/lib/constants";
 
 export const metadata = createMetadata({
   title: "Contact",
   description:
-    "Contact A1 Fitness & Nutrition for personal training consultations across Long Island. Call (516) 310-3338 or request coaching online.",
+    "Contact A1 Fitness & Nutrition for personal training consultations across Long Island. Call or WhatsApp (516) 310-3338.",
   path: "/contact",
   keywords: ["contact personal trainer Long Island", "book personal training"],
 });
@@ -24,7 +25,9 @@ export default async function ContactPage() {
     getFaqs(),
   ]);
   const hero = getSection(page, "hero");
-
+  const wa =
+    settings.whatsappHref ||
+    whatsappLink(undefined, SITE.whatsappHref);
   return (
     <>
       <PageHero
@@ -73,11 +76,13 @@ export default async function ContactPage() {
                 </li>
                 <li>
                   <a
-                    href={settings.emailHref}
-                    className="inline-flex max-w-full items-start gap-3 text-ice transition hover:text-crimson"
+                    href={wa}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-3 text-ice transition hover:text-crimson"
                   >
-                    <Mail className="mt-0.5 h-4 w-4 shrink-0 text-crimson" />
-                    <span className="break-all">{settings.email}</span>
+                    <MessageCircle className="h-4 w-4 text-crimson" />
+                    WhatsApp
                   </a>
                 </li>
                 <li>

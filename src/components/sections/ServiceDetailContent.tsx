@@ -8,6 +8,8 @@ import { FAQAccordion } from "@/components/ui/FAQAccordion";
 import { Breadcrumbs, FinalCTA, OfferBanner } from "@/components/ui/Cards";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import type { Service } from "@/lib/services";
+import { whatsappLink } from "@/lib/constants";
+import { useSiteSettings } from "@/providers/SettingsProvider";
 
 export function ServiceDetailContent({
   service,
@@ -19,6 +21,11 @@ export function ServiceDetailContent({
   const related = relatedServices;
   const heroSrc = service.heroImage || service.image;
   const detailSrc = service.detailImage || service.image;
+  const settings = useSiteSettings();
+  const waHref = whatsappLink(
+    `Hi Adam, I'm interested in ${service.title} with A1 Fitness.`,
+    settings.whatsappHref,
+  );
 
   return (
     <>
@@ -50,11 +57,20 @@ export function ServiceDetailContent({
           <p className="mt-3 max-w-2xl text-sm text-muted sm:mt-4 sm:text-base md:text-lg">
             {service.summary}
           </p>
-          <div className="mt-7 flex w-full flex-col gap-3 sm:mt-8 sm:w-auto sm:flex-row">
-            <MagneticButton href={`/contact?service=${service.slug}`} showArrow>
-              Get Started
+          <div className="mt-7 flex w-full flex-col gap-3 sm:mt-8 sm:w-auto sm:flex-row sm:flex-wrap">
+            <MagneticButton href={settings.phoneHref} showArrow external>
+              Call Now
             </MagneticButton>
-            <MagneticButton href="/services" variant="ghost">
+            <MagneticButton
+              href={waHref}
+              variant="ghost"
+              external
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              WhatsApp
+            </MagneticButton>
+            <MagneticButton href="/services" variant="outline">
               All Services
             </MagneticButton>
           </div>
@@ -74,7 +90,7 @@ export function ServiceDetailContent({
               {service.overview}
             </p>
             <p className="mt-4 text-sm font-semibold text-silver">
-              Contact for personalized program options.
+              Call or WhatsApp for personalized program options.
             </p>
           </Reveal>
           <Reveal direction="right">
@@ -192,7 +208,10 @@ export function ServiceDetailContent({
 
       <FinalCTA
         title={`Ready for ${service.title}?`}
-        description="Contact A1 Fitness & Nutrition to discuss personalized program options across Long Island."
+        description="Call or WhatsApp A1 Fitness & Nutrition to discuss personalized program options across Long Island."
+        primaryHref={waHref}
+        primaryLabel="WhatsApp Us"
+        primaryExternal
       />
     </>
   );
