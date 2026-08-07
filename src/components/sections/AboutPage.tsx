@@ -220,6 +220,18 @@ export function AboutPageContent({ cms }: { cms?: AboutCms }) {
                     "Father of a child on the autism spectrum"}
                 </span>
               </li>
+              <li className="flex gap-2.5">
+                <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-crimson" aria-hidden="true" />
+                <span>
+                  {story?.fields.point3 || "ISSA Certified Personal Trainer"}
+                </span>
+              </li>
+              <li className="flex gap-2.5">
+                <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-crimson" aria-hidden="true" />
+                <span>
+                  {story?.fields.point4 || "ISSA Certified Nutrition Coach"}
+                </span>
+              </li>
             </ul>
 
             <div className="mt-8 border-t border-white/10 pt-6">

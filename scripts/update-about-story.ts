@@ -11,6 +11,8 @@ const STORY_FIELDS: Record<string, string> = {
   intro: "Been in fitness industry for over 30 years",
   point1: "Former competitive bodybuilder & powerlifter",
   point2: "Father of a child on the autism spectrum",
+  point3: "ISSA Certified Personal Trainer",
+  point4: "ISSA Certified Nutrition Coach",
   sayingsLabel: "Some of my favorite sayings",
   saying1: "The only bad workout is the one that didn't happen",
   saying2: "The heavier weight in the gym is the front door",
